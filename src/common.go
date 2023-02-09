@@ -84,7 +84,7 @@ func getRandomBase64() (string, error) {
 // envLoad 環境変数のロード
 func loadEnv() {
 	// 開発環境のファイルを読み込む
-	println("\n 【環境変数の設定】")
+	fmt.Println("\n 【環境変数の設定】")
 	envAuthServerPort = getEnv("AUTH_SERVER_PORT", envAuthServerPort)
 	envAuthBaseUri = getEnv("AUTH_BASE_URI", envAuthBaseUri)
 	envSmtpHost = getEnv("SMTP_HOST", envSmtpHost)
