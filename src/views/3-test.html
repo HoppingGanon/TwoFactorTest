@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <title>
+      二段階認証テスト(トークンの検証)
+    </title>
+
+    <!-- vueおよびvuetify-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  
+  </head>
+  <body>
+    <div id="app"><v-app><v-main>
+      <v-container class="d-flex justify-center">
+        <v-card width="480px">
+          <v-toolbar dark color="green">
+            <v-card-title class="font-weight-bold">二段階認証テスト(トークンの検証)</v-card-title>
+          </v-toolbar>
+          <v-card-text>
+            受け取った二段階認証済みトークンは<br>
+            <span v-text="token"></span><br>
+            です。以下のボタンにより、トークンの有効性を検証できます。
+          </v-card-text>
+          <v-card class="ma-2" outlined min-height="50px">
+            <span v-if="successMessage" class="green--text" v-text="successMessage"></span>
+            <span v-if="errorMessage" class="red--text" v-text="errorMessage"></span>
+          </v-card>
+          <v-card-actions class="d-flex justify-end">
+            <v-btn dark color="green" @click="submit" :disable="disabled">送信</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-container></v-main></v-app>
+    </div>
+
+    <!-- 通信用のaxios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- vueおよびvuetify -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+    <script>
+      new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+          successMessage: '',
+          errorMessage: '',
+          disabled: false,
+          baseUrl: 'http://localhost:8080'
+        },
+        computed: {
+          token () {
+            return sessionStorage.getItem('token')
+          }
+        },
+        methods: {
+          submit () {
+            const data = this
+            if (data.disabled == false) {
+              data.disabled = true
+              axios.get(`${data.baseUrl}/test`, {
+                headers: {
+                  Authorization: `Bearer ${sessionStorage.getItem('token')}`
+                }
+              }).then(function (r) {
+                data.successMessage = r.data
+                data.errorMessage = ''
+              }).catch(function (e) {
+                data.successMessage = ''
+                data.errorMessage = e.response.data
+              }).finally(function () {
+                data.disabled = false
+              })
+            }
+          }
+        },
+        mounted () {
+          if (!sessionStorage.getItem('token')) {
+            // トークンがなければ1にリダイレクト
+            window.location.href = './1-login.html'
+          }
+        }
+      })
+
+    </script>
+  </body>
+</html>
