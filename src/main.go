@@ -26,7 +26,7 @@ var envSmtpPort = "587"
 var envSmtpUser = "<from>@gmail.com"
 
 // SMTPに含めるパスワード 環境変数'SMTP_PASSWORD'に対応する
-var envSmtpPassword = "<gmail api key>"
+var envSmtpPassword = "<application password>"
 
 // 送信元のメールアドレス 環境変数'SMTP_FROM_ADDRESS'に対応する
 var envSmtpFromAddress = "<from>@gmail.com"
@@ -73,10 +73,10 @@ func main() {
 	e.GET("/view/onetime.html", createOnetime)
 	e.GET("/view/test.html", createTest)
 
-	e.Logger.Fatal(e.Start(":" + envAuthServerPort))
 	fmt.Printf("\n'%s/view/login.html'にアクセスすることで、動作を確認できます\n", envAuthBaseUri)
 	fmt.Printf("[注意] 一段階目の認証プロセスに成功すると、'%s'から'%s'へメールが送信されるため、アドレス等が間違ってないか十分に確認してから実行してください\n",
 		envSmtpFromAddress,
 		envSmtpToAddress,
 	)
+	e.Logger.Fatal(e.Start(":" + envAuthServerPort))
 }
