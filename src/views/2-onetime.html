@@ -74,7 +74,7 @@
                 // 一時トークンの初期化
                 sessionStorage.setItem('tempToken', '')
                 sessionStorage.setItem('token', r.data)
-                window.location.href = './3-test.html'
+                window.location.href = './test.html'
               }).catch(function (e) {
                 data.errorMessage = e.response.data
               }).finally(function () {
@@ -86,7 +86,7 @@
         mounted () {
           if (!sessionStorage.getItem('tempToken')) {
             // トークンがなければ1にリダイレクト
-            window.location.href = './1-login.html'
+            window.location.href = './login.html'
           }
         }
       })

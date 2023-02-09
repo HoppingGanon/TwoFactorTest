@@ -81,7 +81,7 @@
                 password: data.password
               }).then(function (r) {
                 sessionStorage.setItem('tempToken', r.data)
-                window.location.href = './2-onetime.html'
+                window.location.href = './onetime.html'
               }).catch(function (e) {
                 data.errorMessage = e.response.data
               }).finally(function () {

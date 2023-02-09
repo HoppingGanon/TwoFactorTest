@@ -69,9 +69,9 @@ func main() {
 	e.GET("/api/test", getTest)
 
 	// テスト用のページ
-	e.GET("/view/login", createLogin)
-	e.GET("/view/onetime", createOnetime)
-	e.GET("/view/test", createTest)
+	e.GET("/view/login.html", createLogin)
+	e.GET("/view/onetime.html", createOnetime)
+	e.GET("/view/test.html", createTest)
 
 	e.Logger.Fatal(e.Start(":" + envAuthServerPort))
 	fmt.Printf("\n'%s/view/login.html'にアクセスすることで、動作を確認できます\n", envAuthBaseUri)
