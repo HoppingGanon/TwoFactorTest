@@ -13,6 +13,29 @@ import (
 	"github.com/labstack/echo"
 )
 
+// ======================================
+// ユーザーから受け取るデータの構造体
+
+// ユーザーから送付される認証情報
+type AuthData struct {
+	UserId   string `json:"userId"`
+	Password string `json:"password"`
+}
+
+// ユーザーから送付される二段階認証情報
+type TowFactorData struct {
+	TempToken string `json:"tempToken"`
+	OneTime   string `json:"oneTime"`
+}
+
+// テスト用のhtmlファイルに渡す環境変数の値
+type ViewEnv struct {
+	EnvAuthBaseUri   string
+	EnvSmtpToAddress string
+}
+
+// ======================================
+
 // ヘッダからBearerトークンを抜き出す関数
 func getBearer(c echo.Context) (string, bool) {
 	auth := c.Request().Header.Get("Authorization")
@@ -61,6 +84,7 @@ func getRandomBase64() (string, error) {
 // envLoad 環境変数のロード
 func loadEnv() {
 	// 開発環境のファイルを読み込む
+	println("\n 【環境変数の設定】")
 	envAuthServerPort = getEnv("AUTH_SERVER_PORT", envAuthServerPort)
 	envAuthBaseUri = getEnv("AUTH_BASE_URI", envAuthBaseUri)
 	envSmtpHost = getEnv("SMTP_HOST", envSmtpHost)
@@ -72,8 +96,11 @@ func loadEnv() {
 }
 
 func getEnv(name string, defaultValue string) string {
+	fmt.Printf("%-20s", name)
 	if os.Getenv(name) == "" {
+		fmt.Printf(" = %s\n", defaultValue)
 		return defaultValue
 	}
+	fmt.Printf(" = %s\n", os.Getenv(name))
 	return os.Getenv(name)
 }

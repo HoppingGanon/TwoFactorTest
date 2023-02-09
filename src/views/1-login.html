@@ -1,3 +1,4 @@
+{{define "login"}}
 <html>
   <head>
     <title>
@@ -19,7 +20,8 @@
             <v-card-title class="font-weight-bold">二段階認証テスト(一段階目)</v-card-title>
           </v-toolbar>
           <v-card-text>
-            ユーザー名とパスワードを入力してください。
+            ユーザー名とパスワードを入力したのち、「送信」ボタンを押してください。<br/><br/>
+            認証に成功すると、登録済みのメールアドレス宛にワンタイムパスワードが送信されます。
           </v-card-text>
           <v-container class="mt-5">
             <v-row dense>
@@ -67,14 +69,14 @@
           password: '',
           errorMessage: '',
           disabled: false,
-          baseUrl: 'http://localhost:8080'
+          baseUrl: '{{.EnvAuthBaseUri}}'
         },
         methods: {
           submit () {
             const data = this
             if (data.disabled == false) {
               data.disabled = true
-              axios.post(`${data.baseUrl}/temp-token`, {
+              axios.post(`${data.baseUrl}/api/temp-token`, {
                 userId: data.userId,
                 password: data.password
               }).then(function (r) {
@@ -93,3 +95,4 @@
     </script>
   </body>
 </html>
+{{end}}

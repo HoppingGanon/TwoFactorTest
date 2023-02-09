@@ -1,3 +1,4 @@
+{{define "test"}}
 <html>
   <head>
     <title>
@@ -49,7 +50,7 @@
           successMessage: '',
           errorMessage: '',
           disabled: false,
-          baseUrl: 'http://localhost:8080'
+          baseUrl: '{{ .EnvAuthBaseUri }}'
         },
         computed: {
           token () {
@@ -61,7 +62,7 @@
             const data = this
             if (data.disabled == false) {
               data.disabled = true
-              axios.get(`${data.baseUrl}/test`, {
+              axios.get(`${data.baseUrl}/api/test`, {
                 headers: {
                   Authorization: `Bearer ${sessionStorage.getItem('token')}`
                 }
@@ -88,3 +89,4 @@
     </script>
   </body>
 </html>
+{{end}}

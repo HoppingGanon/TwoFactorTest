@@ -1,3 +1,4 @@
+{{define "onetime"}}
 <html>
   <head>
     <title>
@@ -19,7 +20,7 @@
             <v-card-title class="font-weight-bold">二段階認証テスト(二段階目)</v-card-title>
           </v-toolbar>
           <v-card-text>
-            登録済みメールアドレス宛に送信されたメールに記載されたワンタイムパスワードを入力してください。
+            登録済みメールアドレス'<span v-text="mailAddress"></span>'宛に送信されたメールに記載されたワンタイムパスワードを入力してください。
           </v-card-text>
           <v-container class="mt-5">
             <v-row dense>
@@ -58,14 +59,15 @@
           oneTime: '',
           errorMessage: '',
           disabled: false,
-          baseUrl: 'http://localhost:8080'
+          baseUrl: '{{ .EnvAuthBaseUri }}',
+          mailAddress: '{{.EnvSmtpToAddress}}'
         },
         methods: {
           submit () {
             const data = this
             if (data.disabled == false) {
               data.disabled = true
-              axios.post(`${data.baseUrl}/token`, {
+              axios.post(`${data.baseUrl}/api/token`, {
                 tempToken: sessionStorage.getItem('tempToken'),
                 oneTime: data.oneTime
               }).then(function (r) {
@@ -92,3 +94,4 @@
     </script>
   </body>
 </html>
+{{end}}
