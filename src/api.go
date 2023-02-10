@@ -13,11 +13,13 @@ import (
 // 最初のログイン画面から送信された認証情報を処理する
 // 認証に成功したら、一段階目の認証トークンを送付する
 func postTempToken(c echo.Context) error {
+	fmt.Println("\n-------------------------")
+
 	// Bodyの読み取り
 	b, err := ioutil.ReadAll(c.Request().Body)
 	if err != nil {
-		println("認証情報の送信方式が間違っています")
-		println(err.Error())
+		fmt.Println("認証情報の送信方式が間違っています")
+		fmt.Println(err.Error())
 		return c.String(403, "認証情報の送信方式が間違っています")
 	}
 
@@ -25,24 +27,24 @@ func postTempToken(c echo.Context) error {
 	var authData AuthData
 	err = json.Unmarshal(b, &authData)
 	if err != nil {
-		println("認証情報の送信方式が間違っています")
-		println(err.Error())
+		fmt.Println("認証情報の送信方式が間違っています")
+		fmt.Println(err.Error())
 		return c.String(403, "認証情報の送信方式が間違っています")
 	}
 
-	fmt.Printf("ユーザーID\n%s\nおよびパスワード\n%s\nを受け取りました\n", authData.UserId, authData.Password)
+	fmt.Printf("ユーザーID'%s'およびパスワード'%s'を受け取りました\n", authData.UserId, authData.Password)
 
 	// 受け取ったユーザーIDとハッシュ化したパスワードが一致しない場合はエラー
 	if authData.UserId != userId || getSHA256(authData.Password) != passwordHash {
-		println("ユーザー名またはパスワードが違います")
+		fmt.Println("ユーザー名またはパスワードが違います")
 		return c.String(403, "ユーザー名またはパスワードが違います")
 	}
 
 	// 一段階目の認証トークンをランダムな文字列(Token68形式と互換のあるBase64形式)で生成
 	tempToken, err := getRandomBase64()
 	if err != nil {
-		println("一段階目の認証トークンの生成に失敗しました")
-		println(err.Error())
+		fmt.Println("一段階目の認証トークンの生成に失敗しました")
+		fmt.Println(err.Error())
 		return c.String(400, "一段階目の認証トークンの生成に失敗しました")
 	}
 
@@ -51,8 +53,8 @@ func postTempToken(c echo.Context) error {
 	// ワンタイムパスワードの数字列を生成
 	n, err := rand.Int(rand.Reader, big.NewInt(1000000))
 	if err != nil {
-		println("ワンタイムパスワードの生成に失敗しました")
-		println(err.Error())
+		fmt.Println("ワンタイムパスワードの生成に失敗しました")
+		fmt.Println(err.Error())
 		return c.String(400, "ワンタイムパスワードの生成に失敗しました")
 	}
 	onetime := fmt.Sprintf("%06d", n)
@@ -71,12 +73,12 @@ func postTempToken(c echo.Context) error {
 		fmt.Sprintf("二段階認証テストのワンタイムパスワードを通知します。\n\n\tワンタイムパスワード\n\t%s", onetime),
 	)
 	if err != nil {
-		println("ワンタイムパスワードのメール送信ができませんでした")
-		println(err.Error())
+		fmt.Println("ワンタイムパスワードのメール送信ができませんでした")
+		fmt.Println(err.Error())
 		return c.String(400, "ワンタイムパスワードのメール送信ができませんでした")
 	}
 
-	println("メールを送信しました")
+	fmt.Println("メールを送信しました")
 
 	// 一段階目の認証トークンとワンタイムパスワードを保管
 	savedTempToken = tempToken
@@ -86,11 +88,13 @@ func postTempToken(c echo.Context) error {
 }
 
 func postToken(c echo.Context) error {
+	fmt.Println("\n-------------------------")
+
 	// Bodyの読み取り
 	b, err := ioutil.ReadAll(c.Request().Body)
 	if err != nil {
-		println("認証情報の送信方式が間違っています")
-		println(err.Error())
+		fmt.Println("認証情報の送信方式が間違っています")
+		fmt.Println(err.Error())
 		return c.String(403, "認証情報の送信方式が間違っています")
 	}
 
@@ -98,24 +102,24 @@ func postToken(c echo.Context) error {
 	var tfd TowFactorData
 	err = json.Unmarshal(b, &tfd)
 	if err != nil {
-		println("認証情報の送信方式が間違っています")
-		println(err.Error())
+		fmt.Println("認証情報の送信方式が間違っています")
+		fmt.Println(err.Error())
 		return c.String(403, "認証情報の送信方式が間違っています")
 	}
 
-	fmt.Printf("一段階目の認証済みトークン\n%s\nおよびワンタイムパスワード\n%s\nを受け取りました\n", tfd.TempToken, tfd.OneTime)
+	fmt.Printf("一段階目の認証済みトークン'%s'およびワンタイムパスワード'%s'を受け取りました\n", tfd.TempToken, tfd.OneTime)
 
 	// トークンとワンタイムパスワードが一致しなければエラー
 	if savedTempToken != tfd.TempToken || savedOnetime != tfd.OneTime {
-		println("ワンタイムパスワードが一致しません")
+		fmt.Println("ワンタイムパスワードが一致しません")
 		return c.String(403, "ワンタイムパスワードが一致しません")
 	}
 
 	// 二段階認証済みトークンをランダムな文字列(Token68形式と互換のあるBase64形式)で生成
 	token, err := getRandomBase64()
 	if err != nil {
-		println("トークンの生成に失敗しました")
-		println(err.Error())
+		fmt.Println("トークンの生成に失敗しました")
+		fmt.Println(err.Error())
 		return c.String(400, "トークンの生成に失敗しました")
 	}
 
@@ -132,18 +136,20 @@ func postToken(c echo.Context) error {
 }
 
 func getTest(c echo.Context) error {
+	fmt.Println("\n-------------------------")
+
 	token, f := getBearer(c)
 
-	fmt.Printf("トークン'%s'を受け取りました\n", token)
+	fmt.Printf("二段階認証済みトークン'%s'を受け取りました\n", token)
 
 	if !f {
-		println("認証情報の送信方式が間違っています")
+		fmt.Println("認証情報の送信方式が間違っています")
 		return c.String(403, "認証情報の送信方式が間違っています")
 	} else if token != savedToken {
-		println("ベアラートークンが一致しません")
+		fmt.Println("ベアラートークンが一致しません")
 		return c.String(403, "ベアラートークンが一致しません")
 	}
 
-	println("トークンは正しく認証されたものです")
+	fmt.Println("トークンは正しく認証されたものです")
 	return c.String(200, "トークンは正しく認証されたものです")
 }

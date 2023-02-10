@@ -96,11 +96,10 @@ func loadEnv() {
 }
 
 func getEnv(name string, defaultValue string) string {
-	fmt.Printf("%-20s", name)
 	if os.Getenv(name) == "" {
-		fmt.Printf(" = %s\n", defaultValue)
+		fmt.Printf("%-20s = %s\n", name, defaultValue)
 		return defaultValue
 	}
-	fmt.Printf(" = %s\n", os.Getenv(name))
+	fmt.Printf("%-20s = %s\n", name, os.Getenv(name))
 	return os.Getenv(name)
 }

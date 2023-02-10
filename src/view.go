@@ -11,7 +11,8 @@ import (
 
 func createView(c echo.Context, name string, path string) error {
 	t := template.New(name)
-	fmt.Printf("ページ'%s'へのアクセスがありました", name)
+	fmt.Println("\n-------------------------")
+	fmt.Printf("ページ'%s'へのアクセスがありました\n", name)
 
 	t, err := t.ParseFiles(path)
 	if err != nil {
