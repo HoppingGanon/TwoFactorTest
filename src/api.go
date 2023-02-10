@@ -57,7 +57,7 @@ func postTempToken(c echo.Context) error {
 	}
 	onetime := fmt.Sprintf("%06d", n)
 
-	fmt.Printf("ワンタイムパスワード'%s'を生成しました\n", savedOnetime)
+	fmt.Printf("ワンタイムパスワード'%s'を生成しました\n", onetime)
 
 	// メールでワンタイムパスワードを送信
 	err = SendMail(
@@ -68,7 +68,7 @@ func postTempToken(c echo.Context) error {
 		envSmtpFromAddress,
 		[]string{envSmtpToAddress},
 		"二段階認証テスト ワンタイムパスワード通知",
-		fmt.Sprintf("二段階認証テストのワンタイムパスワードを通知します。\n\n\tワンタイムパスワード\n\t%s", savedOnetime),
+		fmt.Sprintf("二段階認証テストのワンタイムパスワードを通知します。\n\n\tワンタイムパスワード\n\t%s", onetime),
 	)
 	if err != nil {
 		println("ワンタイムパスワードのメール送信ができませんでした")
