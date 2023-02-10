@@ -55,10 +55,7 @@ func postTempToken(c echo.Context) error {
 		println(err.Error())
 		return c.String(400, "ワンタイムパスワードの生成に失敗しました")
 	}
-
-	// 一段階目の認証トークンとワンタイムパスワードを保管
-	savedTempToken = tempToken
-	savedOnetime = fmt.Sprintf("%06d", n)
+	onetime := fmt.Sprintf("%06d", n)
 
 	fmt.Printf("ワンタイムパスワード'%s'を生成しました\n", savedOnetime)
 
@@ -80,6 +77,10 @@ func postTempToken(c echo.Context) error {
 	}
 
 	println("メールを送信しました")
+
+	// 一段階目の認証トークンとワンタイムパスワードを保管
+	savedTempToken = tempToken
+	savedOnetime = onetime
 
 	return c.String(201, tempToken)
 }
